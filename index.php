@@ -1,4 +1,12 @@
 <?php
 require_once 'core/init.php';
 
-DB::getInstance();
+$user = DB::getInstance();
+$user->get('users',array('usn','=','alex'));
+
+
+if (!$user->count()){
+    echo 'mayong nakukuang user';
+} else {
+    echo 'Success';
+}
