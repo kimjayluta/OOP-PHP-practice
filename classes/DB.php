@@ -9,7 +9,8 @@ class DB {
     // Connection sa database
     private function __construct() {
         try{
-            $this->_pdo = new PDO('mysql:host='.Config::get('mysql/host').';dbname='.Config::get('mysql/db'),Config::get('mysql/username'),Config::get('mysql/password'));
+            $this->_pdo = new PDO('mysql:host='.Config::get('mysql/host').';dbname='.Config::get('mysql/db'),
+                Config::get('mysql/username'),Config::get('mysql/password'));
         }catch (PDOException $e){
             die($e->getMessage());
         }
@@ -24,7 +25,7 @@ class DB {
     }
 
     // This function do is preparing the query and executing it
-    public function query($sql, $params = array()){
+    private function query($sql, $params = array()){
         $this->_error = false;
         // Prepare the sql
         if ($this->_query = $this->_pdo->prepare($sql)){
@@ -51,25 +52,30 @@ class DB {
         return $this;
     }
 
-    public function action($action, $table, $condition = array()){
-        if (count($condition) == 3){
+    private function action($action,  $table, $condition = array()){
+        if ($condition  !== null && count($condition) == 3){
             $operators = array('=', '>', '<', '>=', '<=');
 
             $field = $condition[0];
             $operator = $condition[1];
             $value = $condition[2];
 
-
             // Check if operator is in the operators array
             if (in_array($operator, $operators)){
-
                 $sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
                 if (!$this->query($sql, array($value))->error()){
                     return $this;
                 }
             }
 
+        } else {
+            $sql = "{$action} FROM {$table}";
+            if (!$this->query($sql)->error()){
+                return $this;
+            }
+
         }
+
         return false;
     }
 
@@ -80,12 +86,20 @@ class DB {
     public function delete($table, $condition = array()){
         return $this->action('DELETE',$table, $condition);
     }
-
+    // Return error if there's an error
     public function error(){
         return $this->_error;
     }
-
+    // Return all the result from the query
+    public function results(){
+        return $this->_results;
+    }
+    // Return the count of the query
     public function count(){
         return $this->_count;
+    }
+    // Return only the first result
+    public function first_result(){
+        return $this->results()[0];
     }
 }
