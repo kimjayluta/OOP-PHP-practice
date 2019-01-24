@@ -12,7 +12,7 @@ $user = DB::getInstance();
    }
 */
 
-$user->insert('users', array(
-    'usn' => 'Kim',
-    'pwd' => 'password',
+$user->update('users',3, array(
+    'usn' => 'KimJayLuta',
+    'pwd' => 'password'
 ));

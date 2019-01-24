@@ -79,33 +79,51 @@ class DB {
         return false;
     }
 
-    public function get($table, $condition = array()){
-        return $this->action('SELECT *', $table, $condition);
+    public function insert($table, $fields = array()){
+        $keys = array_keys($fields);
+        $values = '';
+        $x = 1;
+
+        foreach ($fields as $field){
+            $values .= '?';
+            if($x < count($fields)){
+                $values .= ',';
+            }
+            $x++;
+        }
+        $sql = "INSERT INTO users(`". implode('`,`',$keys) ."`) VALUES ({$values})";
+        if (!$this->query($sql,$fields)->error()){
+            return true;
+        }
+        return false;
     }
 
-    public function insert($table, $fields = array()){
-        if (count($fields)){
-            $keys = array_keys($fields);
-            $values = '';
-            $x = 1;
+    public function update($table, $id, $fields){
+        $set = '';
+        $x = 1;
 
-            foreach ($fields as $field){
-                $values .= '?';
-                if($x < count($fields)){
-                    $values .= ',';
-                }
-                $x++;
+        foreach ($fields as $name => $value){
+            $set .= "{$name} = ?";
+            if ($x < count($fields)){
+                $set .= ', ';
             }
-            $sql = "INSERT INTO users(`". implode('`,`',$keys) ."`) VALUES ({$values})";
-            if (!$this->query($sql,$fields)->error()){
-                return true;
-            }
+            $x++;
         }
+        $sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
+        if (!$this->query($sql,$fields)->error()){
+            return true;
+        }
+        return false;
+    }
+
+    public function get($table, $condition = array()){
+        return $this->action('SELECT *', $table, $condition);
     }
 
     public function delete($table, $condition = array()){
         return $this->action('DELETE',$table, $condition);
     }
+
     // Return error if there's an error
     public function error(){
         return $this->_error;
