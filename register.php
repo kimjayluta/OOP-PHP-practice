@@ -1,9 +1,12 @@
 <?php
 require_once 'core/init.php';
+
 // Checking if there's a submitted data
 if (Input::exists()){
-    $validate = new Validate();
-    $validation = $validate->check($_POST, array(
+    // This if condition if for CSRF security
+    if(Token::checkToken(Input::get('token'))){
+        $validate = new Validate();
+        $validation = $validate->check($_POST, array(
             'usn' => array(
                 'required' => true,
                 'min' => 2,
@@ -23,13 +26,14 @@ if (Input::exists()){
                 'min' => 2,
                 'max' => 50
             )
-    ));
-    // Check if validation is passed
-    if ($validation->passed()){
-        echo 'Passed';
-    } else {
-        foreach($validation->errors() as $error){
-            echo $error . "<br>";
+        ));
+        // Check if validation is passed
+        if ($validation->passed()){
+            echo 'Passed';
+        } else {
+            foreach($validation->errors() as $error){
+                echo $error . "<br>";
+            }
         }
     }
 }
@@ -51,5 +55,6 @@ if (Input::exists()){
         <label for="name">Name</label>
         <input type="text" id="name" name="name" value="<?php echo Input::get('name')?>">
     </div>
+    <input type="hidden" name="token" id="token" value="<?php echo Token::generateToken()?>">
     <button type="submit">Submit</button>
 </form>

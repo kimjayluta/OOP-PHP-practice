@@ -91,7 +91,7 @@ class DB {
             }
             $x++;
         }
-        $sql = "INSERT INTO users(`". implode('`,`',$keys) ."`) VALUES ({$values})";
+        $sql = "INSERT INTO {$table} (`". implode('`,`',$keys) ."`) VALUES ({$values})";
         if (!$this->query($sql,$fields)->error()){
             return true;
         }
@@ -115,15 +115,14 @@ class DB {
         }
         return false;
     }
-
+    // Get data function from the database
     public function get($table, $condition = array()){
         return $this->action('SELECT *', $table, $condition);
     }
-
+    // Delete data from the database
     public function delete($table, $condition = array()){
         return $this->action('DELETE',$table, $condition);
     }
-
     // Return error if there's an error
     public function error(){
         return $this->_error;

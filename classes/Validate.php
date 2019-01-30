@@ -28,7 +28,7 @@ class Validate {
                             break;
                         case 'max':
                             if (strlen($value) > $rule_value){
-                                $this->addError("{$item} must be a minimum of {$rule_value} characters.");
+                                $this->addError("{$item} must be a maximum of {$rule_value} characters.");
                             }
                             break;
                         case 'matches':
