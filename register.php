@@ -42,7 +42,7 @@ if (Input::exists()){
             }
 
             Session::flashMessage('home',"You've been successfully registered, you can now login!");
-            Redirect::to('login.php');
+            Redirect::to(404);
         } else {
             foreach($validation->errors() as $error){
                 echo $error . "<br>";
