@@ -29,7 +29,8 @@ if (Input::exists()){
         ));
         // Check if validation is passed
         if ($validation->passed()){
-            echo 'Passed';
+            Session::flashMessage('success','You registered successfully!');
+            header('location: index.php');
         } else {
             foreach($validation->errors() as $error){
                 echo $error . "<br>";

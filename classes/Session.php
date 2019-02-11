@@ -18,5 +18,15 @@ class Session {
             unset($_SESSION[$name]);
         }
     }
+    // Function to flash a message
+    public static function flashMessage($name, $string = ''){
+        if (self::exists($name)) {
+            $session = self::get($name);
+            self::delete($name);
+            return $session;
+        } else {
+            self::put($name, $string);
+        }
+    }
 
 }
