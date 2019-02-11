@@ -1,5 +1,18 @@
 <?php
 class DB {
+    /*
+    * $user = DB::getInstance();
+    * To query first data
+    * $var->first_result()->field
+    * To query all data the example is below
+    * foreach ($user->results() as $user){
+           echo $user->usn,'<br>';
+       }
+    *$user->update('users',3, array(
+            'usn' => 'KimJayLuta',
+            'pwd' => 'password'
+        ));
+    */
     private static $_instance = null;
     private $_pdo,
             $_query,

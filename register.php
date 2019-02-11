@@ -1,6 +1,5 @@
 <?php
 require_once 'core/init.php';
-
 // Checking if there's a submitted data
 if (Input::exists()){
     // This if condition if for CSRF security
@@ -29,8 +28,21 @@ if (Input::exists()){
         ));
         // Check if validation is passed
         if ($validation->passed()){
-            Session::flashMessage('success','You registered successfully!');
-            header('location: index.php');
+            $user = new User();
+            try {
+                $user -> create(array(
+                    'usn' => Input::get('usn'),
+                    'pwd' => Hash::make(Input::get('pwd')),
+                    'name' => Input::get('name'),
+                    'joined' => date('Y-m-d H:i:s'),
+                    'grp' => 1
+                ));
+            } catch (Exception $e){
+                die($e->getMessage());
+            }
+
+            Session::flashMessage('home',"You've been successfully registered, you can now login!");
+            header('location: login.php');
         } else {
             foreach($validation->errors() as $error){
                 echo $error . "<br>";
