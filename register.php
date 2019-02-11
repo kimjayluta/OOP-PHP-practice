@@ -3,7 +3,7 @@ require_once 'core/init.php';
 // Checking if there's a submitted data
 if (Input::exists()){
     // This if condition if for CSRF security
-    if(Token::checkToken(Input::get('token'))){
+    if(Token::check(Input::get('token'))){
         $validate = new Validate();
         $validation = $validate->check($_POST, array(
             'usn' => array(
@@ -42,7 +42,7 @@ if (Input::exists()){
             }
 
             Session::flashMessage('home',"You've been successfully registered, you can now login!");
-            Redirect::to(404);
+            Redirect::to('login.php');
         } else {
             foreach($validation->errors() as $error){
                 echo $error . "<br>";
@@ -68,6 +68,6 @@ if (Input::exists()){
         <label for="name">Name</label>
         <input type="text" id="name" name="name" value="<?php echo Input::get('name')?>">
     </div>
-    <input type="hidden" name="token" id="token" value="<?php echo Token::generateToken()?>">
+    <input type="hidden" name="token" id="token" value="<?php echo Token::generate()?>">
     <button type="submit">Submit</button>
 </form>
