@@ -3,10 +3,12 @@ class User {
     private $_db,
             $_data,
             $_sessionName,
+            $_cookieName,
             $_isLoggedIn;
     public function __construct($user = null){
         $this->_db = DB::getInstance();
         $this->_sessionName = Config::get('session/session_name');
+        $this->_cookieName = Config::get('remember/cookie_name');
 
         if (!$user){
             if (Session::exists($this->_sessionName)){
@@ -44,11 +46,28 @@ class User {
     }
 
     // Logging user in
-    public function login($username = null, $password = null){
+    public function login($username = null, $password = null, $remember){
         $user = $this->find($username);
         if ($user){
             if ($this->data()->pwd === Hash::make($password)){
                 Session::put($this->_sessionName, $this->data()->id);
+
+                if ($remember){
+                    $hash = Hash::unique();
+                    echo $hash . '<br>';
+                    $hashCheck = $this->_db->get('user_session', array('user_id', '=', $this->data()->id));
+
+                    if (!$hashCheck->count()){
+                        $this->_db->insert('user_session',array(
+                           'user_id' => $this->data()->id,
+                            'hash' => $hash
+                        ));
+                    } else {
+                        $hash = $hashCheck->first_result()->hash;
+                    }
+                    echo $hash;
+                    Cookie::put($this->_cookieName, $hash, Config::get('remember/cookie_expiry'));
+                }
                 return true;
             }
         }
