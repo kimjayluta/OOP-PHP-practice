@@ -7,27 +7,27 @@ if (Session::exists('home')){
 
 if (Input::exists()){
     if (Token::check(Input::get('token'))){
-        // Validating data
+        // Validating the inputs
         $validate = new Validate();
-        $validate = $validate->check($_POST, array(
-            'usn' => array('required' => true),
-            'pwd' => array('required' => true),
+        $validation = $validate->check($_POST, array(
+           'usn' => array('required' => true),
+           'pwd' => array('required' => true)
         ));
-
-        // Log user in or output all the errors
-        if ($validate->passed()){
+        // Checking here if the inputs is valid
+        if ($validation->passed()){
             $user = new User();
-            $login = $user->login(Input::get('usn'), Input::get('usn'));
+            // Sa login() function tig pa process ang login
+            $login = $user->login(Input::get('usn'), Input::get('pwd'));
 
             if ($login){
-                Session::flashMessage('loginSuccess', 'Good day user!');
                 Redirect::to('index.php');
             } else {
-                echo "<p>There was an error logging in please try again later!</p>";
+                echo '<p>Login Failed! Please try again.</p>';
             }
         } else {
-            foreach ($validate->errors() as $error){
-                echo $error . '<br />';
+            // Output all the errors if there's an error
+            foreach ($validation->errors() as $error){
+                echo $error . '<br/>';
             }
         }
     }
