@@ -12,9 +12,8 @@ class Cookie {
     public static function put($name, $value, $expiry){
         if (setcookie($name, $value, time() + $expiry)){
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
     // Function to delete cookie
     public static function delete($name){
